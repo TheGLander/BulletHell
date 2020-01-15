@@ -21,10 +21,14 @@ window.onload = function(){
 	var shipBlue = new Image();
 	shipBlue.src = "shipBlue.png";
 
-	var orb = new Image();
-	orb.src = "orb.png";
-	var wanderer = new Image();
-	wanderer.src = "wanderer.png";
+	var orbPink = new Image();
+	orbPink.src = "orbPink.png";
+	var orbBlue = new Image();
+	orbBlue.src = "orbBlue.png";
+	var wandererPink = new Image();
+	wandererPink.src = "wandererPink.png";
+	var wandererBlue = new Image();
+	wandererBlue.src = "wandererBlue.png";
 	var follower = new Image();
 	follower.src = "follower.png";
 
@@ -70,14 +74,19 @@ window.onload = function(){
 		this.width = width;
 		this.height = height;
 		this.behaviour = 0;
-		this.coolDownVanilla = 0;
-		this.coolDownFollowing = 0;
+		this.timer = 0;
+		this.angle = 0;
+		this.xTarget = 600;
+		this.yTarget = 600;
 		
 		ennemyList.push(this);
 		
 		this.draw = function(){
 			context.fillStyle = "#FF0000";
 			context.fillRect(this.x,this.y,this.width,this.height);
+			
+			context.fillStyle = "#00FF00";
+			context.fillRect(640 - ((this.health/500) * 100),680,(this.health/500) * 2 * 100,40);
 		}
 		
 		this.check = function(id){
@@ -92,19 +101,38 @@ window.onload = function(){
 				}
 			}
 			
-			this.coolDownVanilla--;
-			if(this.coolDownVanilla < 0){
-				pow = new OrbVanilla(this.x,this.y,guy.x,guy.y,1);
-				this.coolDownVanilla = 5;
+			this.behaviour = Math.floor(this.health / 100);
+			
+			this.timer++;
+			this.angle += 0.03;
+			
+			
+			// if(timer%300 == 0){
+				
+			// }
+			
+			
+			switch (this.behaviour){
+				case 4:
+					if (this.timer % 5 == 0){
+						pow = new OrbVanilla(this.x,this.y,this.x + 50 * Math.cos(this.angle),this.y + 50 * Math.sin(this.angle),1);
+						this.angle += Math.PI / 2;
+						pow = new OrbVanilla(this.x,this.y,this.x + 50 * Math.cos(this.angle),this.y + 50 * Math.sin(this.angle),0);
+						this.angle += Math.PI / 2;
+						pow = new OrbVanilla(this.x,this.y,this.x + 50 * Math.cos(this.angle),this.y + 50 * Math.sin(this.angle),1);
+						this.angle += Math.PI / 2;
+						pow = new OrbVanilla(this.x,this.y,this.x + 50 * Math.cos(this.angle),this.y + 50 * Math.sin(this.angle),0);
+						this.angle += Math.PI / 2;
+					}				
+					
+					if (this.timer % 30 == 0){
+						pow = new OrbWander(this.x,this.y,0);
+						pow = new OrbWander(this.x,this.y,1);
+					}
+					break;
 			}
 			
-			this.coolDownFollowing--;
-			if(this.coolDownFollowing < 0){
-				pow = new OrbFollow(this.x,this.y,guy.x,guy.y,1);
-				pow = new OrbWander(this.x,this.y,1);
-				this.coolDownFollowing = 25;
-			}
-			
+				
 		}
 		
 		this.tick = function(id){
@@ -227,8 +255,12 @@ window.onload = function(){
 			this.x += 10*Math.cos(this.angle);
 			this.y -= 10*Math.sin(this.angle);
 			
-			context.fillStyle = "#FF55FF";
-			context.drawImage(orb,this.x,this.y);
+			if(this.color == 1){
+				context.drawImage(orbBlue,this.x,this.y);
+			}
+			else{
+				context.drawImage(orbPink,this.x,this.y);
+			}
 			
 			if(this.x<0 || this.x>1280 || this.y<0 || this.y>720){
 				bulletList.splice(id,1);
@@ -308,8 +340,12 @@ window.onload = function(){
 			this.x += 10 * Math.cos(this.angle);
 			this.y -= 10 * Math.sin(this.angle);
 			
-			context.fillStyle = "#FF55FF";
-			context.drawImage(wanderer,this.x,this.y);
+			if(this.color == 1){
+				context.drawImage(wandererBlue,this.x,this.y);
+			}
+			else{
+				context.drawImage(wandererPink,this.x,this.y);
+			}
 			
 			if(this.x<0 || this.x>1280 || this.y<0 || this.y>720){
 				bulletList.splice(id,1);
@@ -330,6 +366,7 @@ window.onload = function(){
 		this.color = 1;
 		this.angle = 0;
 		this.colorCoolDown = 0;
+		this.health = 10;
 
 		this.check = function () {
 			if ((clavier.haut || clavier.bas) && (clavier.gauche || clavier.droite)){
@@ -365,6 +402,19 @@ window.onload = function(){
 				this.colorCoolDown = 5;
 			}
 			
+			if(this.x < 10){
+				this.hspeed = 5;
+			}
+			if(this.x > 1250){
+				this.hspeed = -5;
+			}
+			if(this.y < 10){
+				this.vspeed = 5;
+			}
+			if(this.y > 690){
+				this.vspeed = -5;
+			}
+			
 			this.x += this.hspeed;
 			this.y += this.vspeed;	
 			
@@ -375,7 +425,7 @@ window.onload = function(){
 			
 			for(i=bulletList.length-1;i>0;i--){
 				if(collisionRectangles(this.x,this.y,32,32,bulletList[i].x,bulletList[i].y,32,32) && (bulletList[i].team == 1) && (bulletList[i].color == this.color)){		
-					console.log("hit");
+					this.health--;
 					bulletList.splice(i,1);
 				}				
 			}
@@ -400,6 +450,9 @@ window.onload = function(){
 			}
 			
 			context.restore();
+						
+			context.fillStyle = "#00FF00";
+			context.fillRect(this.x - ((this.health / 10) * 32) + 16,this.y + 32,((this.health / 10) * 64), 6)
 		}
 		
 		this.tick = function () {
@@ -443,7 +496,7 @@ window.onload = function(){
 
 	guy = new Player();
 	meanie = new Ennemy(324,321,64,43);
-	death = new Boss(600,400,64,110,50);
+	death = new Boss(600,400,64,110,499);
 
 	
 	
