@@ -7,12 +7,7 @@ window.onload = function(){
 	bulletList.push(null);
 	ennemyList = new Array();
 	ennemyList.push(null);
-	
-	hurtMap = new Array(640);
-	for(i=0;i<640;i++)
-	{
-		hurtMap[i] = new Array(360);
-	}
+
 	
 	let click
 			
@@ -114,20 +109,21 @@ window.onload = function(){
 			
 			switch (this.behaviour){
 				case 4:
-					if (this.timer % 5 == 0){
-						pow = new OrbVanilla(this.x,this.y,this.x + 50 * Math.cos(this.angle),this.y + 50 * Math.sin(this.angle),1);
-						this.angle += Math.PI / 2;
-						pow = new OrbVanilla(this.x,this.y,this.x + 50 * Math.cos(this.angle),this.y + 50 * Math.sin(this.angle),0);
-						this.angle += Math.PI / 2;
-						pow = new OrbVanilla(this.x,this.y,this.x + 50 * Math.cos(this.angle),this.y + 50 * Math.sin(this.angle),1);
-						this.angle += Math.PI / 2;
-						pow = new OrbVanilla(this.x,this.y,this.x + 50 * Math.cos(this.angle),this.y + 50 * Math.sin(this.angle),0);
-						this.angle += Math.PI / 2;
-					}				
+					// if (this.timer % 5 == 0){
+						// pow = new OrbVanilla(this.x,this.y,this.x + 50 * Math.cos(this.angle),this.y + 50 * Math.sin(this.angle),1);
+						// this.angle += Math.PI / 2;
+						// pow = new OrbVanilla(this.x,this.y,this.x + 50 * Math.cos(this.angle),this.y + 50 * Math.sin(this.angle),0);
+						// this.angle += Math.PI / 2;
+						// pow = new OrbVanilla(this.x,this.y,this.x + 50 * Math.cos(this.angle),this.y + 50 * Math.sin(this.angle),1);
+						// this.angle += Math.PI / 2;
+						// pow = new OrbVanilla(this.x,this.y,this.x + 50 * Math.cos(this.angle),this.y + 50 * Math.sin(this.angle),0);
+						// this.angle += Math.PI / 2;
+					// }				
 					
 					if (this.timer % 30 == 0){
-						pow = new OrbWander(this.x,this.y,0);
-						pow = new OrbWander(this.x,this.y,1);
+						// pow = new OrbWander(this.x,this.y,0);
+						// pow = new OrbWander(this.x,this.y,1);
+						pow = new OrbFollow(this.x,this.y,1);
 					}
 					break;
 			}
