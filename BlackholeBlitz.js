@@ -123,7 +123,7 @@ window.onload = function(){
 					if (this.timer % 30 == 0){
 						// pow = new OrbWander(this.x,this.y,0);
 						// pow = new OrbWander(this.x,this.y,1);
-						pow = new OrbFollow(this.x,this.y,1);
+						pow = new OrbFollow(this.x,this.y,guy.x,guy.y,1);
 					}
 					break;
 			}
